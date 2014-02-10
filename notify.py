@@ -24,19 +24,25 @@
 
 import sys
 import urllib2
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree as ElementTree
 import smtplib
 
+import ConfigParser
+
 TVDB_API_URL = 'http://thetvdb.com/api/'
-TVDB_API_KEY = 'api_key'
 
-MAIL_SERVER = 'smtp.gmail.com'
-MAIL_PORT = 587
-MAIL_ACCOUNT = 'test@example.com'
-MAIL_PASSWORD = 'secret'
+Config = ConfigParser.ConfigParser()
+Config.read("notify.ini")
 
-MAIL_TO = 'test@example.com'
-MAIL_FROM = 'test@example.com'
+TVDB_API_KEY = Config.get('TVDB', 'tvdb_api_key')
+
+MAIL_SERVER = Config.get('Mail', 'mail_server')
+MAIL_PORT = Config.get('Mail', 'mail_port')
+MAIL_ACCOUNT = Config.get('Mail', 'mail_account')
+MAIL_PASSWORD = Config.get('Mail', 'mail_password')
+
+MAIL_TO = Config.get('Notification', 'mail_to')
+MAIL_FROM = Config.get('Notification', 'mail_from')
 
 seriesId = sys.argv[3]
 season = sys.argv[4]
@@ -48,7 +54,7 @@ url = urllib2.urlopen(dataUrl)
 data = url.read()
 url.close()
 
-root = ET.fromstring(data)
+root = ElementTree.fromstring(data)
 seriesName = root.find('./Series/SeriesName').text
 
 sender = MAIL_FROM
