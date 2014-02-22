@@ -22,17 +22,19 @@
 #  6. MAIL_TO - Mail recepient
 #  7. MAIL_FROM - Mail from address
 
+import os
+import smtplib
 import sys
 import urllib2
 import xml.etree.ElementTree as ElementTree
-import smtplib
 
 import ConfigParser
 
 TVDB_API_URL = 'http://thetvdb.com/api/'
 
+configFile = os.path.dirname(os.path.realpath(__file__)) + '/notify.ini'
 Config = ConfigParser.ConfigParser()
-Config.read("notify.ini")
+Config.read(configFile)
 
 TVDB_API_KEY = Config.get('TVDB', 'tvdb_api_key')
 
