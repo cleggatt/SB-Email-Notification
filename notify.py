@@ -24,17 +24,18 @@
 #
 # Note that this script makes no allowance for concurrent invocations.
 
+TVDB_API_URL = 'http://thetvdb.com/api/'
+
+import ConfigParser
+import httplib2
 import os
 import smtplib
 import sys
-import httplib2
 import xml.etree.ElementTree as ElementTree
 
-import ConfigParser
+scriptLocation = os.path.dirname(os.path.realpath(__file__))
 
-TVDB_API_URL = 'http://thetvdb.com/api/'
-
-configFile = os.path.dirname(os.path.realpath(__file__)) + '/notify.ini'
+configFile = scriptLocation + '/notify.ini'
 Config = ConfigParser.ConfigParser()
 Config.read(configFile)
 
@@ -54,7 +55,7 @@ episode = sys.argv[5]
 
 dataUrl = TVDB_API_URL + TVDB_API_KEY + '/series/' + seriesId
 
-h = httplib2.Http(".cache")
+h = httplib2.Http(scriptLocation + '/.cache')
 (resp, content) = h.request(dataUrl, "GET")
 
 root = ElementTree.fromstring(content)
