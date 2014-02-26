@@ -25,7 +25,7 @@
 import os
 import smtplib
 import sys
-import urllib2
+import httplib2
 import xml.etree.ElementTree as ElementTree
 
 import ConfigParser
@@ -52,11 +52,10 @@ episode = sys.argv[5]
 
 dataUrl = TVDB_API_URL + TVDB_API_KEY + '/series/' + seriesId
 
-url = urllib2.urlopen(dataUrl)
-data = url.read()
-url.close()
+h = httplib2.Http(".cache")
+(resp, content) = h.request(dataUrl, "GET")
 
-root = ElementTree.fromstring(data)
+root = ElementTree.fromstring(content)
 seriesName = root.find('./Series/SeriesName').text
 
 sender = MAIL_FROM
