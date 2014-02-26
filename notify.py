@@ -21,6 +21,8 @@
 #  5. MAIL_PASSWORD - SMTP mail account password
 #  6. MAIL_TO - Mail recepient
 #  7. MAIL_FROM - Mail from address
+#
+# Note that this script makes no allowance for concurrent invocations.
 
 import os
 import smtplib

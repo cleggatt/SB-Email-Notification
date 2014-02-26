@@ -24,3 +24,5 @@ You will need to set the following values in `config.ini`:
  3. `[Notification]`
     1. `[mail_to]` - Email recepient
     2. `[mail_from]` - Email from address
+
+Note that this script makes no allowance for concurrent invocations.
