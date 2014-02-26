@@ -25,4 +25,9 @@ You will need to set the following values in `config.ini`:
     1. `[mail_to]` - Email recepient
     2. `[mail_from]` - Email from address
 
+If the 'Keep Original Files' option is selected, Sickbeard can sometime post-process a file more than once. To prevent
+the sending of multiple emails, this script stores it's last execution time in a 'lastrun.dat' file (stored as
+seconds since the epoch). If the file passed as the first argument has not changed since the time stored in the file,
+a notification will not be sent.
+
 Note that this script makes no allowance for concurrent invocations.

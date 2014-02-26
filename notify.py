@@ -31,9 +31,30 @@ import httplib2
 import os
 import smtplib
 import sys
+import time
 import xml.etree.ElementTree as ElementTree
 
 scriptLocation = os.path.dirname(os.path.realpath(__file__))
+
+lastRunFile = scriptLocation + '/lastrun.dat'
+
+if os.path.isfile(lastRunFile):
+    f = open(lastRunFile, 'r+')
+    lastRun = float(f.readline())
+    f.seek(0)
+    f.truncate()
+else:
+    lastRun = 0
+    f = open(lastRunFile, 'w')
+
+timeNow = time.time()
+f.write('{}'.format(timeNow))
+f.close()
+
+fileChangeTime = os.path.getmtime(sys.argv[1])
+
+if fileChangeTime < lastRun:
+    sys.exit()
 
 configFile = scriptLocation + '/notify.ini'
 Config = ConfigParser.ConfigParser()
