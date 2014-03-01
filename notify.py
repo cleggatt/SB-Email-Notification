@@ -5,7 +5,7 @@
 # This is designed to be called by Sickbeard as an additional post-processing 
 # script (see https://code.google.com/p/sickbeard/wiki/AdvancedSettings).
 # 
-# It takes 6 parameters (although it only uses 3-5):
+# It takes 6 parameters (although it only uses 2-5):
 #  1. Final full path to the episode file
 #  2. Original name of the episode file
 #  3. Show tvdb id
@@ -108,7 +108,7 @@ def notify(config, series, season, episode):
 
 
 last_run = last_run_millis()
-file_changed = file_changed_millis(sys.argv[1])
+file_changed = file_changed_millis(sys.argv[2])
 if file_changed < last_run:
     sys.exit()
 
