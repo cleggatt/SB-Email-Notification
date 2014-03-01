@@ -3,7 +3,7 @@ Send a Sickbeard post processing email notification.
 This is designed to be called by Sickbeard as an additional post-processing script (see
 [Sick Beard advanced settings](https://code.google.com/p/sickbeard/wiki/AdvancedSettings)).
 
-It takes 6 parameters (although it only uses 3-5):
+It takes 6 parameters (although it only uses 2-5):
 
  1. Final full path to the episode file
  2. Original name of the episode file
