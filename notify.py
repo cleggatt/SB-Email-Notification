@@ -32,6 +32,7 @@ import sys
 import time
 import xml.etree.ElementTree as ElementTree
 
+
 SCRIPT_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -47,6 +48,7 @@ def last_run_millis():
         last_run = 0
         f = open(last_run_file, 'w')
 
+    ## TODO Defer updating last run time until all processing is successful
     now = time.time()
     f.write('{}'.format(now))
     f.close()
@@ -64,19 +66,28 @@ def parse_config():
     config.read(config_file)
     return config
 
-
-def series_name(config, id):
+# TODO Catch and rethrow errors with context
+def series_name(config, series_id):
 
     api_url = 'http://thetvdb.com/api/'
     api_key = config.get('TVDB', 'tvdb_api_key')
 
-    url = api_url + api_key + '/series/' + id
+    url = api_url + api_key + '/series/' + series_id
 
     h = httplib2.Http(SCRIPT_LOCATION + '/.cache')
     (resp, content) = h.request(url, "GET")
 
     root = ElementTree.fromstring(content)
     return root.find('./Series/SeriesName').text
+
+
+def episode_name(path):
+    # TODO Use system separator
+    last_slash = path.rfind('/')
+    if last_slash < 0:
+        last_slash = 0
+    name = path[last_slash + 1:]
+    return name
 
 
 def notify(config, series, season, episode):
@@ -90,7 +101,7 @@ def notify(config, series, season, episode):
     mail_from = config.get('Notification', 'mail_from')
 
     subject = 'New episode of ' + series
-    body = 'A new episode of ' + seriesName + ' is available (Season ' + season + ', episode ' + episode + ')'
+    body = 'A new episode of ' + series + ' is available (Season ' + season + ', episode ' + episode + ')'
 
     headers = ["From: " + mail_from,
                "Subject: " + subject,
@@ -112,12 +123,16 @@ file_changed = file_changed_millis(sys.argv[2])
 if file_changed < last_run:
     sys.exit()
 
-config = parse_config()
+global_config = parse_config()
 
-series_id = sys.argv[3]
+final_path = sys.argv[1]
+tvdb_id = sys.argv[3]
 season_num = sys.argv[4]
 episode_num = sys.argv[5]
 
-seriesName = series_name(config, series_id)
+try:
+    series_name = series_name(global_config, tvdb_id)
+except Exception as e:
+    series_name = episode_name(final_path)
 
-notify(config, seriesName, season_num, episode_num)
+notify(global_config, series_name, season_num, episode_num)
