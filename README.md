@@ -1,3 +1,6 @@
+SickBeard notifier [![Build Status](https://secure.travis-ci.org/cleggatt/sbnotify.png)](http://travis-ci.org/cleggatt/sbnotify)
+========
+
 Send a Sickbeard post processing email notification.
 
 This is designed to be called by Sickbeard as an additional post-processing script (see
