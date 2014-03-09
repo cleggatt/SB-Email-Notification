@@ -5,7 +5,7 @@
 # This is designed to be called by Sickbeard as an additional post-processing 
 # script (see https://code.google.com/p/sickbeard/wiki/AdvancedSettings).
 # 
-# It takes 6 parameters (although it only uses 2-5):
+# It takes 6 parameters:
 #  1. Final full path to the episode file
 #  2. Original name of the episode file
 #  3. Show tvdb id
@@ -33,6 +33,7 @@ import time
 import xml.etree.ElementTree as ElementTree
 
 
+# TODO Allow these paths to be controlled by the ini file
 SCRIPT_LOCATION = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -48,7 +49,8 @@ def last_run_millis():
         last_run = 0
         f = open(last_run_file, 'w')
 
-    ## TODO Defer updating last run time until all processing is successful
+    # TODO Defer updating last run time until all processing is successful
+    # Log details of last run as well, and any errors
     now = time.time()
     f.write('{}'.format(now))
     f.close()
@@ -84,8 +86,7 @@ def series_name(config, series_id):
 def episode_name(path):
     # TODO Use system separator
     last_slash = path.rfind('/')
-    if last_slash < 0:
-        last_slash = 0
+    # If we can't find a slash, last_slash will be -1,
     name = path[last_slash + 1:]
     return name
 
@@ -103,11 +104,11 @@ def notify(config, series, season, episode):
     subject = 'New episode of ' + series
     body = 'A new episode of ' + series + ' is available (Season ' + season + ', episode ' + episode + ')'
 
-    headers = ["From: " + mail_from,
-               "Subject: " + subject,
-               "To: " + mail_to,
-               "MIME-Version: 1.0",
-               "Content-Type: text/html"]
+    headers = ['From: ' + mail_from,
+               'Subject: ' + subject,
+               'To: ' + mail_to,
+               'MIME-Version: 1.0',
+               'Content-Type: text/html']
     headers = "\r\n".join(headers)
 
     session = smtplib.SMTP(mail_server, mail_port)
@@ -118,21 +119,22 @@ def notify(config, series, season, episode):
     session.quit()
 
 
-last_run = last_run_millis()
-file_changed = file_changed_millis(sys.argv[2])
-if file_changed < last_run:
-    sys.exit()
+if __name__ == '__main__':
+    last_run = last_run_millis()
+    file_changed = file_changed_millis(sys.argv[2])
+    if file_changed < last_run:
+        sys.exit()
 
-global_config = parse_config()
+    global_config = parse_config()
 
-final_path = sys.argv[1]
-tvdb_id = sys.argv[3]
-season_num = sys.argv[4]
-episode_num = sys.argv[5]
+    final_path = sys.argv[1]
+    tvdb_id = sys.argv[3]
+    season_num = sys.argv[4]
+    episode_num = sys.argv[5]
 
-try:
-    series_name = series_name(global_config, tvdb_id)
-except Exception as e:
-    series_name = episode_name(final_path)
+    try:
+        series_name = series_name(global_config, tvdb_id)
+    except Exception as e:
+        series_name = episode_name(final_path)
 
-notify(global_config, series_name, season_num, episode_num)
+    notify(global_config, series_name, season_num, episode_num)
