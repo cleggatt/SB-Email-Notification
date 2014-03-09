@@ -1,4 +1,4 @@
-SickBeard notifier [![Build Status](https://secure.travis-ci.org/cleggatt/sbnotify.png)](http://travis-ci.org/cleggatt/sbnotify)
+SickBeard notifier [![Build Status](https://secure.travis-ci.org/cleggatt/sbnotify.png)](http://travis-ci.org/cleggatt/sbnotify) [![Coverage Status](https://coveralls.io/repos/cleggatt/sbnotify/badge.png?branch=master)](https://coveralls.io/r/cleggatt/sbnotify?branch=master)
 ========
 
 Send a Sickbeard post processing email notification.
