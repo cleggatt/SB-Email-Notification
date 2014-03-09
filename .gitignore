@@ -1,3 +1,3 @@
-notify.ini
-lastrun.dat
-.cache/
+sbnotify/notify.ini
+sbnotify/lastrun.dat
+sbnotify/.cache/
