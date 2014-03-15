@@ -30,6 +30,7 @@ import os
 import smtplib
 import sys
 import time
+import urllib
 import xml.etree.ElementTree as ElementTree
 
 
@@ -68,6 +69,7 @@ def parse_config():
     config.read(config_file)
     return config
 
+
 # TODO Catch and rethrow errors with context
 def series_name(config, series_id):
 
@@ -77,7 +79,7 @@ def series_name(config, series_id):
     url = api_url + api_key + '/series/' + series_id
 
     h = httplib2.Http(SCRIPT_LOCATION + '/.cache')
-    (resp, content) = h.request(url, "GET")
+    (resp, content) = h.request(url, 'GET')
 
     root = ElementTree.fromstring(content)
     return root.find('./Series/SeriesName').text
@@ -89,6 +91,20 @@ def episode_name(path):
     # If we can't find a slash, last_slash will be -1,
     name = path[last_slash + 1:]
     return name
+
+
+def add_todo(config, series, season, episode):
+    httplib2.debuglevel = 1
+
+    api_url = 'https://todoist.com/API'
+    api_token = config.get('Todoist', 'todo_api_key')
+
+    content = 'Watch ' + series + ', episode ' + episode + ' from season ' + season
+
+    url = api_url + '/addItem?token=' + api_token + '&content=' + urllib.quote_plus(content)
+
+    h = httplib2.Http()
+    h.request(url, 'GET')
 
 
 def notify(config, series, season, episode):
@@ -122,6 +138,7 @@ def notify(config, series, season, episode):
 if __name__ == '__main__':
     last_run = last_run_millis()
     file_changed = file_changed_millis(sys.argv[2])
+    # TODO This may fail if multiple files are awaiting (re)processing, as we'll when we're run again we'll ignore them
     if file_changed < last_run:
         sys.exit()
 
@@ -137,4 +154,5 @@ if __name__ == '__main__':
     except Exception as e:
         series_name = episode_name(final_path)
 
+    add_todo(global_config, series_name, season_num, episode_num)
     notify(global_config, series_name, season_num, episode_num)

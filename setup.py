@@ -1,5 +1,7 @@
-from distutils.core import setup, Command
+from distutils.core import Command
+from setuptools import setup
 import pytest
+
 
 class PyTest(Command):
     user_options = []
@@ -8,6 +10,7 @@ class PyTest(Command):
     def finalize_options(self):
         pass
     def run(self):
+        # TODO Pass in command line arguments
         errno = pytest.main()
         raise SystemExit(errno)
 setup(
@@ -16,7 +19,8 @@ setup(
     packages=['sbnotify'],
     install_requires=[
         'httplib2',
-        'pytest'
+        'pytest',
+        'mock'
         ],
     cmdclass = {'test': PyTest}
 )
