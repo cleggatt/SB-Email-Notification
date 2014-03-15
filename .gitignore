@@ -1,5 +1,5 @@
 *.pyc
 htmlcov/
-sbnotify/notify.ini
+.coverage
 sbnotify/lastrun.dat
 sbnotify/.cache/
