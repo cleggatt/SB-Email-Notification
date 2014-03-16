@@ -27,12 +27,11 @@
 import ConfigParser
 import httplib2
 import os
-import smtplib
 import sys
 import time
-import urllib
 import xml.etree.ElementTree as ElementTree
 
+import notifier
 
 # TODO Allow these paths to be controlled by the ini file
 SCRIPT_LOCATION = os.path.dirname(os.path.realpath(__file__))
@@ -92,50 +91,8 @@ def episode_name(path):
     name = path[last_slash + 1:]
     return name
 
-
-def add_todo(config, series, season, episode):
-    httplib2.debuglevel = 1
-
-    api_url = 'https://todoist.com/API'
-    api_token = config.get('Todoist', 'todo_api_key')
-
-    content = 'Watch ' + series + ', episode ' + episode + ' from season ' + season
-
-    url = api_url + '/addItem?token=' + api_token + '&content=' + urllib.quote_plus(content)
-
-    h = httplib2.Http()
-    h.request(url, 'GET')
-
-
-def notify(config, series, season, episode):
-
-    mail_server = config.get('Mail', 'mail_server')
-    mail_port = config.get('Mail', 'mail_port')
-    mail_account = config.get('Mail', 'mail_account')
-    mail_password = config.get('Mail', 'mail_password')
-
-    mail_to = config.get('Notification', 'mail_to')
-    mail_from = config.get('Notification', 'mail_from')
-
-    subject = 'New episode of ' + series
-    body = 'A new episode of ' + series + ' is available (Season ' + season + ', episode ' + episode + ')'
-
-    headers = ['From: ' + mail_from,
-               'Subject: ' + subject,
-               'To: ' + mail_to,
-               'MIME-Version: 1.0',
-               'Content-Type: text/html']
-    headers = "\r\n".join(headers)
-
-    session = smtplib.SMTP(mail_server, mail_port)
-    session.ehlo()
-    session.starttls()
-    session.login(mail_account, mail_password)
-    session.sendmail(mail_from, mail_to, headers + "\r\n\r\n" + body)
-    session.quit()
-
-
 if __name__ == '__main__':
+
     last_run = last_run_millis()
     file_changed = file_changed_millis(sys.argv[2])
     # TODO This may fail if multiple files are awaiting (re)processing, as we'll when we're run again we'll ignore them
@@ -154,5 +111,5 @@ if __name__ == '__main__':
     except Exception as e:
         series_name = episode_name(final_path)
 
-    add_todo(global_config, series_name, season_num, episode_num)
-    notify(global_config, series_name, season_num, episode_num)
+    notifier.TodoNotifier(series_name, season_num, episode_num, global_config._sections['Todoist']).notify()
+    notifier.EmailNotifier(series_name, season_num, episode_num, global_config._sections['Mail']).notify()

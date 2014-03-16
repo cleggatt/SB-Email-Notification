@@ -34,17 +34,3 @@ def test_series_name(mock_request, mock_response):
                          ])
 def test_episode_name(path, expected):
     assert notify.episode_name(path) == expected
-
-
-@patch('httplib2.Http.request')
-def test_add_todo(mock_request):
-    # Set up
-    config = ConfigParser.ConfigParser()
-    config.get = MagicMock(return_value='2143')
-    series = 'Series name'
-    season = '2'
-    episode = '42'
-    # Test
-    notify.add_todo(config, series, season, episode)
-    # Verify
-    mock_request.assert_called_with('https://todoist.com/API/addItem?token=2143&content=Watch+Series+name%2C+episode+42+from+season+2', 'GET')
