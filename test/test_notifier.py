@@ -7,16 +7,11 @@ sys.path.insert(0, my_path + '/../')
 
 from mock import call
 from mock import patch
-from mock import Mock
 from sbnotify.notifier import *
 
-
-@patch('smtplib.SMTP')
-def test_email(mock_smtp_constructor):
+@patch('smtplib.SMTP', spec=smtplib.SMTP)
+def test_email(mock_smtp):
     # Set up
-    mock_smtp = Mock(name='SMTP mock')
-    mock_smtp_constructor.return_value = mock_smtp
-
     notifier = EmailNotifier('Series name', 2, 42,
                              {'mail_server': 'mail.com',
                               'mail_port': '123',
@@ -26,13 +21,12 @@ def test_email(mock_smtp_constructor):
                               'mail_from': 'sender@mail.com'})
     # Test
     notifier.notify()
-    # Verify
-    mock_smtp_constructor.assert_called_with('mail.com', '123')
-    # Compare calls individually to make spotting errors easier
-    assert mock_smtp.method_calls[0] == call.ehlo()
-    assert mock_smtp.method_calls[1] == call.starttls()
-    assert mock_smtp.method_calls[2] == call.login('me@mail.com', 's3cr3t')
-    assert mock_smtp.method_calls[3] == call.sendmail('sender@mail.com',
+    # Verify - compare calls individually to make spotting errors easier
+    assert mock_smtp.mock_calls[0] == call('mail.com', '123')
+    assert mock_smtp.mock_calls[1] == call().ehlo()
+    assert mock_smtp.mock_calls[2] == call().starttls()
+    assert mock_smtp.mock_calls[3] == call().login('me@mail.com', 's3cr3t')
+    assert mock_smtp.mock_calls[4] == call().sendmail('sender@mail.com',
                                                       'recipient@mail.com',
                                                       ('From: sender@mail.com\r\n' +
                                                        'Subject: New episode of Series name\r\n' +
@@ -40,9 +34,8 @@ def test_email(mock_smtp_constructor):
                                                        'MIME-Version: 1.0\r\n' +
                                                        'Content-Type: text/html\r\n\r\n' +
                                                        'A new episode of Series name is available (Season 2, episode 42)'))
-    assert mock_smtp.method_calls[4] == call.quit()
-    assert len(mock_smtp.method_calls) == 5
-
+    assert mock_smtp.mock_calls[5] == call().quit()
+    assert len(mock_smtp.mock_calls) == 6
 
 @patch('httplib2.Http.request')
 def test_todo(mock_request):
