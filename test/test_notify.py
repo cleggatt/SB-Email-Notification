@@ -10,7 +10,6 @@ import ConfigParser
 from mock import patch, MagicMock
 from sbnotify import notify
 
-
 @patch('httplib2.Response')
 @patch('httplib2.Http.request')
 def test_series_name(mock_request, mock_response):

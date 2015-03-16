@@ -18,15 +18,17 @@ It takes 6 parameters (although it only uses 2-5):
 You will need to set the following values in `config.ini`:
 
  1. `[TVDB]`
-    1. `[tvdb_api_key]` - A TVDB API key
+    1. `<tvdb_api_key>` - A TVDB API key
+ 2. `[Todoist]`
+    1. `<todo_api_key>` - A Todoist API key
  2. `[Mail]`
-    1. `[mail_server]` - An SMTP mail server (currently set for GMail)
-    2. `[mail_port]` - SMTP mail server port (currently set for GMail)
-    3. `[mail_account]` - SMTP mail account name
-    4. `[mail_password]` - SMTP mail account password
+    1. `<mail_server>` - An SMTP mail server (currently set for GMail)
+    2. `<mail_port>` - SMTP mail server port (currently set for GMail)
+    3. `<mail_account>` - SMTP mail account name
+    4. `<mail_password>` - SMTP mail account password
  3. `[Notification]`
-    1. `[mail_to]` - Email recepient
-    2. `[mail_from]` - Email from address
+    1. `<mail_to>` - Email recepient
+    2. `<mail_from>` - Email from address
 
 If the 'Keep Original Files' option is selected, Sickbeard can sometime post-process a file more than once. To prevent
 the sending of multiple emails, this script stores it's last execution time in a 'lastrun.dat' file (stored as
