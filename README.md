@@ -1,7 +1,7 @@
 SickBeard notifier [![Build Status](https://secure.travis-ci.org/cleggatt/sbnotify.png)](http://travis-ci.org/cleggatt/sbnotify) [![Coverage Status](https://coveralls.io/repos/cleggatt/sbnotify/badge.png?branch=master)](https://coveralls.io/r/cleggatt/sbnotify?branch=master)
 ========
 
-**This project has been abandoned**. As noted it has issues with concurrent invocations. Additionally,  it's handling of
+**This project has been abandoned**. As noted it has issues with concurrent invocations. Additionally, the handling of
 the 'Keep Original Files' case it not sophisticated enough to be considered robust (WIP to fix this in the
 improved-tracking branch).
 
